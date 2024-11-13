@@ -1,1 +1,7 @@
-cmake-build-debug
+
+# Build Artifacts
+cmake-build-*/
+
+# Environments
+*.env*
+
