@@ -21,7 +21,7 @@ void MinHeap::swap(int* a, int* b) {
 void MinHeap::resizeHeapArray() {
     int* newHeapArr = new int[capacity * 2];
 
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i <= size; i++) {
         newHeapArr[i] = heapArr[i];
     }
 
@@ -63,11 +63,11 @@ void MinHeap::MinHeapify(int index) {
 
     int minIndex = index;
 
-    if (leftIndex < size && heapArr[leftIndex] < heapArr[index]) {
+    if (leftIndex <= size && heapArr[leftIndex] < heapArr[index]) {
         minIndex = leftIndex;
     }
 
-    if (rightIndex < size && heapArr[rightIndex] < heapArr[minIndex]) {
+    if (rightIndex <= size && heapArr[rightIndex] < heapArr[minIndex]) {
         minIndex = rightIndex;
     }
 
