@@ -27,7 +27,7 @@ TEST(HuffmanTreeTest, MultipleCharacterTree) {
     EXPECT_EQ(tree.getCodeword('d'), "0");
 }
 
-TEST(HuffmanTreeTest, EncodingAndDecoding) {
+TEST(HuffmanTreeTest, EncodingAndDecodingFreqMapConstructor) {
     std::string input = "abacdab";
     unordered_map<char, int> charFreqs;
 
@@ -36,8 +36,20 @@ TEST(HuffmanTreeTest, EncodingAndDecoding) {
     }
     HuffmanTree tree(charFreqs);
 
-    std::string encoded = tree.encode(input);
-    std::string decoded = tree.decode(encoded);
+    tree.setDecodedDataAndEncode(input);
+    std::string encoded = tree.getEncodedData();
+    std::string decoded = tree.getDecodedData();
+
+    EXPECT_EQ(decoded, input);
+}
+
+TEST(HuffmanTreeTest, EncodingAndDecodingStringConstructor) {
+    std::string input = "abacdab";
+    HuffmanTree tree(input);
+
+    tree.setDecodedDataAndEncode(input);
+    std::string encoded = tree.getEncodedData();
+    std::string decoded = tree.getDecodedData();
 
     EXPECT_EQ(decoded, input);
 }

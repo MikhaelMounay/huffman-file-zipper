@@ -8,6 +8,20 @@ HuffmanTree::HuffmanTree() {
 }
 
 HuffmanTree::HuffmanTree(unordered_map<char, int> freqMap) {
+    buildTree(freqMap);
+}
+
+HuffmanTree::HuffmanTree(string inputData) {
+    unordered_map<char, int> charFreqs;
+
+    for (int i = 0; i < inputData.size(); i++) {
+        charFreqs[inputData[i]] += 1;
+    }
+
+    buildTree(charFreqs);
+}
+
+void HuffmanTree::buildTree(unordered_map<char, int> freqMap) {
     for (auto it = freqMap.begin(); it != freqMap.end(); it++) {
         minHeap.insert(it->first, it->second);
     }
@@ -25,7 +39,10 @@ HuffmanTree::HuffmanTree(unordered_map<char, int> freqMap) {
     }
 
     generateCodes(minHeap.getMin(), "");
+    encode();
+    decode(); // TODO: This line is just for testing purposes
 }
+
 
 void HuffmanTree::generateCodes(HuffmanNode* root, string codeword) {
     if (!root) {
@@ -45,22 +62,22 @@ string HuffmanTree::getCodeword(char c) {
     return codewords[c];
 }
 
-string HuffmanTree::encode(string inputStr) {
-    std::string encoded;
+string HuffmanTree::encode() {
+    string encodedString;
 
-    for (int i = 0; i < inputStr.size(); i++) {
-        encoded += getCodeword(inputStr[i]);
+    for (int i = 0; i < decodedData.size(); i++) {
+        encodedString += getCodeword(decodedData[i]);
     }
 
-    return encoded;
+    return encodedString;
 }
 
-string HuffmanTree::decode(string encodedStr) {
+string HuffmanTree::decode() {
     HuffmanNode* current = minHeap.getMin();
     string decodedString;
 
-    for (int i = 0; i < encodedStr.size(); i++) {
-        if (encodedStr[i] == '0') {
+    for (int i = 0; i < encodedData.size(); i++) {
+        if (encodedData[i] == '0') {
             current = current->left;
         } else {
             current = current->right;
@@ -73,4 +90,22 @@ string HuffmanTree::decode(string encodedStr) {
     }
 
     return decodedString;
+}
+
+void HuffmanTree::setDecodedDataAndEncode(string originalInput) {
+    decodedData = std::move(originalInput);
+    encodedData = encode();
+}
+
+void HuffmanTree::setEncodedDataAndDecode(string encodedData) {
+    this->encodedData = std::move(encodedData);
+    decodedData = decode();
+}
+
+string HuffmanTree::getEncodedData() {
+    return encodedData;
+}
+
+string HuffmanTree::getDecodedData() {
+    return decodedData;
 }
