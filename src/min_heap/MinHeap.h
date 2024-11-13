@@ -1,14 +1,16 @@
 #ifndef MINHEAP_H
 #define MINHEAP_H
 
+#include "../huffman_tree/HuffmanNode.h"
+
 class MinHeap {
 private:
-    int* heapArr;
+    HuffmanNode** heapArr;
     int capacity;
     int size;
 
     // A utility function to swap two elements
-    void swap(int* a, int* b);
+    void swap(HuffmanNode** a, HuffmanNode** b);
 
     // A utility function to resize the heap array
     void resizeHeapArray();
@@ -32,8 +34,11 @@ public:
     // Gets the index of right child of the node at index "index"
     int rightChild(int index);
 
-    // Inserts a new key "key"
-    void insertKey(int key);
+    // Inserts a new character and its frequency
+    void insert(char character, int frequency);
+
+    // Inserts a new HuffmanNode
+    void insert(HuffmanNode* node);
 
     // A function to Heapify a subtree with the root at given index "index"
     void MinHeapify(int index);
@@ -41,11 +46,14 @@ public:
     // Checks if the heap is empty
     bool isEmpty();
 
+    // Gets the current size of the heap
+    int getSize();
+
     // Gets the minimum key (key at root) from the heap
-    int getMin();
+    HuffmanNode* getMin();
 
     // Gets the minimum key (key at root) and remove it from the heap
-    int extractMin();
+    HuffmanNode* extractMin();
 };
 
 #endif //MINHEAP_H
