@@ -1,27 +1,31 @@
 #include "HuffmanTree.h"
 
-#include <iostream>
-
-
 HuffmanTree::HuffmanTree() {
     MinHeap minHeap = MinHeap();
 }
 
 HuffmanTree::HuffmanTree(unordered_map<char, int> freqMap) {
-    buildTree(freqMap);
+    MinHeap minHeap = MinHeap(freqMap.size());
+    buildTreeFreqMap(freqMap);
 }
 
 HuffmanTree::HuffmanTree(string inputData) {
-    unordered_map<char, int> charFreqs;
+    unordered_map<char, int> freqMap;
 
     for (int i = 0; i < inputData.size(); i++) {
-        charFreqs[inputData[i]] += 1;
+        freqMap[inputData[i]] += 1;
     }
 
-    buildTree(charFreqs);
+    MinHeap minHeap = MinHeap(freqMap.size());
+    buildTreeFreqMap(freqMap);
 }
 
-void HuffmanTree::buildTree(unordered_map<char, int> freqMap) {
+HuffmanTree::HuffmanTree(unordered_map<char, string> codewordsMap) {
+    this->codewordsMap = std::move(codewordsMap);
+    buildTreeCodewordsMap();
+}
+
+void HuffmanTree::buildTreeFreqMap(unordered_map<char, int> freqMap) {
     for (auto it = freqMap.begin(); it != freqMap.end(); it++) {
         minHeap.insert(it->first, it->second);
     }
@@ -38,11 +42,44 @@ void HuffmanTree::buildTree(unordered_map<char, int> freqMap) {
         top->right = right;
     }
 
-    generateCodes(minHeap.getMin(), "");
+    huffRoot = minHeap.getMin();
+    generateCodes(huffRoot, "");
     encode();
     decode(); // TODO: This line is just for testing purposes
 }
 
+void HuffmanTree::buildTreeCodewordsMap() {
+    unordered_map<string, HuffmanNode*> prefixTree;
+    HuffmanNode* root = nullptr;
+
+    for (auto it = codewordsMap.begin(); it != codewordsMap.end(); it++) {
+        char character = it->first;
+        string codeword = it->second;
+
+        HuffmanNode* current = root;
+        for (int i = 0; i < codeword.length(); i++) {
+            if (current == nullptr) {
+                current = new HuffmanNode();
+            }
+
+            if (codeword[i] == '0') {
+                if (current->left == nullptr) {
+                    current->left = new HuffmanNode();
+                }
+                current = current->left;
+            } else if (codeword[i] == '1') {
+                if (current->right == nullptr) {
+                    current->right = new HuffmanNode();
+                }
+                current = current->right;
+            }
+        }
+
+        current->data = character;
+    }
+
+    huffRoot = root;
+}
 
 void HuffmanTree::generateCodes(HuffmanNode* root, string codeword) {
     if (!root) {
@@ -50,7 +87,7 @@ void HuffmanTree::generateCodes(HuffmanNode* root, string codeword) {
     }
 
     if (root->data != static_cast<char>(0)) {
-        codewords[root->data] = std::move(codeword);
+        codewordsMap[root->data] = std::move(codeword);
         // Using std::move just to avoid unnecessary copies
     }
 
@@ -59,7 +96,7 @@ void HuffmanTree::generateCodes(HuffmanNode* root, string codeword) {
 }
 
 string HuffmanTree::getCodeword(char c) {
-    return codewords[c];
+    return codewordsMap[c];
 }
 
 string HuffmanTree::encode() {
@@ -73,7 +110,7 @@ string HuffmanTree::encode() {
 }
 
 string HuffmanTree::decode() {
-    HuffmanNode* current = minHeap.getMin();
+    HuffmanNode* current = huffRoot;
     string decodedString;
 
     for (int i = 0; i < encodedData.size(); i++) {
@@ -85,7 +122,7 @@ string HuffmanTree::decode() {
 
         if (current->left == nullptr && current->right == nullptr) {
             decodedString += current->data;
-            current = minHeap.getMin();
+            current = huffRoot;
         }
     }
 

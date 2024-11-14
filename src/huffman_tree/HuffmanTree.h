@@ -8,15 +8,19 @@ using namespace std;
 
 class HuffmanTree {
 private:
+    HuffmanNode* huffRoot;
     MinHeap minHeap;
-    unordered_map<char, string> codewords;
+    unordered_map<char, string> codewordsMap;
     string decodedData;
     string encodedData;
 
     // Helper Functions
 
     // A function to build Huffman Tree given a map of characters and their frequencies
-    void buildTree(unordered_map<char, int> freqMap);
+    void buildTreeFreqMap(unordered_map<char, int> freqMap);
+
+    // A function to build Huffman Tree given a map of characters and their frequencies
+    void buildTreeCodewordsMap();
 
     // A function to generate codewords used after building the tree
     void generateCodes(HuffmanNode* node, string codeword);
@@ -36,6 +40,8 @@ public:
 
     // Parameterized constructor that takes input data as string to encode
     explicit HuffmanTree(string inputData);
+
+    explicit HuffmanTree(unordered_map<char, string> codewordsMap);
 
     // Gets the Huffman Code for a given character c
     string getCodeword(char c);
