@@ -15,13 +15,18 @@ public:
     // Parameterized constructor that takes the paths of the encoded and decoded files
     FileDealer(string DecodedFilePath, string EncodedFilePath);
 
+    // Reads a normal data file from decodedFilePath
     // TODO: void readOriginalData();
-    // TODO: void writeDecodedData();
 
+    // Takes encoded string and its accompanying map of codewords and save them to the binary file encodedFilePath
     bool writeEncodedDataBinary(string encodedString,
-                                unordered_map<char, string> codewords);
+                                const unordered_map<char, string>& codewords);
 
+    // Reads encoded string and its accompanying map of codewords from the binary file encodedFilePath and constructs a HuffmanTree with them
     HuffmanTree* readEncodedDataBinary();
+
+    // Writes a normal data file to decodedFilePath
+    // TODO: void writeDecodedData();
 
     // Setters
     void setDecodedFilePath(string filePath);

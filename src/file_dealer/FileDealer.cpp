@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <fstream>
-using namespace std;
 
 FileDealer::FileDealer(): decodedFilePath("inputData.txt"),
                           encodedFilePath("encodedData.hfz") {
@@ -13,15 +12,17 @@ FileDealer::FileDealer(string DecodedFilePath, string EncodedFilePath):
 }
 
 bool FileDealer::writeEncodedDataBinary(string encodedString,
-                                        unordered_map<char, string> codewords) {
+                                        const unordered_map<char, string>&
+                                        codewords) {
     ofstream outFile(encodedFilePath, ios::binary);
     if (!outFile.is_open()) {
         return false;
     }
 
     // Writing size of codewords map
-    outFile.write(reinterpret_cast<const char*>(codewords.size()),
-                  sizeof(codewords.size()));
+    size_t codewordsSize = codewords.size();
+    outFile.write(reinterpret_cast<const char*>(&codewordsSize),
+                  sizeof(codewordsSize));
 
     // Writing the characters, their codewordLength, and their codewords
     for (auto it = codewords.begin(); it != codewords.end(); it++) {
@@ -95,8 +96,7 @@ HuffmanTree* FileDealer::readEncodedDataBinary() {
         encodedString += bit;
     }
 
-    HuffmanTree* huffTree = new HuffmanTree(codewords);
-    huffTree->setEncodedDataAndDecode(encodedString);
+    HuffmanTree* huffTree = new HuffmanTree(codewords, encodedString);
 
     return huffTree;
 }

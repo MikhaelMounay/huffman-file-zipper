@@ -41,16 +41,21 @@ public:
     // Parameterized constructor that takes input data as string to encode
     explicit HuffmanTree(string inputData);
 
-    explicit HuffmanTree(unordered_map<char, string> codewordsMap);
-
-    // Gets the Huffman Code for a given character c
-    string getCodeword(char c);
+    explicit HuffmanTree(unordered_map<char, string> codewordsMap, string encodedString);
 
     // Sets the decoded data and encodes it based on this Huffman Tree
     void setDecodedDataAndEncode(string originalInput);
 
     // Sets the encoded data and decodes it based on this Huffman Tree
     void setEncodedDataAndDecode(string encodedData);
+
+    // Getters
+
+    // Gets the codewords map of this Huffman Tree
+    unordered_map<char, string>* getCodewordsMap();
+
+    // Gets the Huffman Code for a given character c
+    string getCodeword(char c);
 
     // Gets the data after encoding using this Huffman Tree
     string getEncodedData();

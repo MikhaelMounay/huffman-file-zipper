@@ -18,11 +18,23 @@ HuffmanTree::HuffmanTree(string inputData) {
 
     MinHeap minHeap = MinHeap(freqMap.size());
     buildTreeFreqMap(freqMap);
+
+    decodedData = inputData;
+
+    if (!decodedData.empty()) {
+        encodedData = encode();
+    }
 }
 
-HuffmanTree::HuffmanTree(unordered_map<char, string> codewordsMap) {
+HuffmanTree::HuffmanTree(unordered_map<char, string> codewordsMap, string encodedString) {
     this->codewordsMap = std::move(codewordsMap);
     buildTreeCodewordsMap();
+
+    encodedData = std::move(encodedString);
+
+    if (!encodedData.empty()) {
+        decodedData = decode();
+    }
 }
 
 void HuffmanTree::buildTreeFreqMap(unordered_map<char, int> freqMap) {
@@ -50,7 +62,7 @@ void HuffmanTree::buildTreeFreqMap(unordered_map<char, int> freqMap) {
 
 void HuffmanTree::buildTreeCodewordsMap() {
     unordered_map<string, HuffmanNode*> prefixTree;
-    HuffmanNode* root = nullptr;
+    HuffmanNode* root = new HuffmanNode();
 
     for (auto it = codewordsMap.begin(); it != codewordsMap.end(); it++) {
         char character = it->first;
@@ -100,6 +112,10 @@ string HuffmanTree::getCodeword(char c) {
 }
 
 string HuffmanTree::encode() {
+    if (decodedData.empty()) {
+        return "";
+    }
+
     string encodedString;
 
     for (int i = 0; i < decodedData.size(); i++) {
@@ -110,6 +126,10 @@ string HuffmanTree::encode() {
 }
 
 string HuffmanTree::decode() {
+    if (encodedData.empty()) {
+        return "";
+    }
+
     HuffmanNode* current = huffRoot;
     string decodedString;
 
@@ -137,6 +157,10 @@ void HuffmanTree::setDecodedDataAndEncode(string originalInput) {
 void HuffmanTree::setEncodedDataAndDecode(string encodedData) {
     this->encodedData = std::move(encodedData);
     decodedData = decode();
+}
+
+unordered_map<char, string>* HuffmanTree::getCodewordsMap() {
+    return &codewordsMap;
 }
 
 string HuffmanTree::getEncodedData() {
