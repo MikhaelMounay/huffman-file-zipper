@@ -26,7 +26,8 @@ HuffmanTree::HuffmanTree(string inputData) {
     }
 }
 
-HuffmanTree::HuffmanTree(unordered_map<char, string> codewordsMap, string encodedString) {
+HuffmanTree::HuffmanTree(unordered_map<char, string> codewordsMap,
+                         string encodedString) {
     this->codewordsMap = std::move(codewordsMap);
     buildTreeCodewordsMap();
 

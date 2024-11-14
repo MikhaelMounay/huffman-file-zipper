@@ -79,11 +79,13 @@ void MinHeap::MinHeapify(int index) {
 
     int minIndex = index;
 
-    if (leftIndex <= size && heapArr[leftIndex]->frequency < heapArr[index]->frequency) {
+    if (leftIndex <= size && heapArr[leftIndex]->frequency < heapArr[index]->
+        frequency) {
         minIndex = leftIndex;
     }
 
-    if (rightIndex <= size && heapArr[rightIndex]->frequency < heapArr[minIndex]->frequency) {
+    if (rightIndex <= size && heapArr[rightIndex]->frequency < heapArr[minIndex]
+        ->frequency) {
         minIndex = rightIndex;
     }
 

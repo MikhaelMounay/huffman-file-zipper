@@ -3,18 +3,45 @@
 #include <cstdint>
 #include <fstream>
 
-FileDealer::FileDealer(): decodedFilePath("inputData.txt"),
-                          encodedFilePath("encodedData.hfz") {
+FileDealer::FileDealer(): decodedOriginFilePath("decodedInput.txt"),
+                          encodedDestinationFilePath("encodedOutput.hfz"),
+                          encodedOriginFilePath("encodedInput.hfz"),
+                          decodedDestinationFilePath("decodedOutput.txt") {
 }
 
-FileDealer::FileDealer(string DecodedFilePath, string EncodedFilePath):
-    decodedFilePath(DecodedFilePath), encodedFilePath(EncodedFilePath) {
+FileDealer::FileDealer(string DecodedOriginFilePath,
+                       string EncodedDestinationFilePath,
+                       string EncodedOriginFilePath,
+                       string DecodedDestinationFilePath):
+    decodedOriginFilePath(std::move(DecodedOriginFilePath)),
+    encodedDestinationFilePath(std::move(EncodedDestinationFilePath)),
+    encodedOriginFilePath(std::move(EncodedOriginFilePath)),
+    decodedDestinationFilePath(std::move(DecodedDestinationFilePath)) {
 }
 
-bool FileDealer::writeEncodedDataBinary(string encodedString,
+HuffmanTree* FileDealer::readOriginalDataText() {
+    ifstream inFile(decodedOriginFilePath);
+    if (!inFile.is_open()) {
+        return nullptr;
+    }
+
+    unordered_map<char, int> charFreqs;
+    char c;
+
+    while (inFile.get(c)) {
+        charFreqs[c]++;
+    }
+
+    inFile.close();
+
+    HuffmanTree* huffTree = new HuffmanTree(charFreqs);
+    return huffTree;
+}
+
+bool FileDealer::writeEncodedDataBinary(const string& encodedString,
                                         const unordered_map<char, string>&
                                         codewords) {
-    ofstream outFile(encodedFilePath, ios::binary);
+    ofstream outFile(encodedDestinationFilePath, ios::binary);
     if (!outFile.is_open()) {
         return false;
     }
@@ -53,7 +80,7 @@ bool FileDealer::writeEncodedDataBinary(string encodedString,
 }
 
 HuffmanTree* FileDealer::readEncodedDataBinary() {
-    ifstream inFile(encodedFilePath, ios::binary);
+    ifstream inFile(encodedOriginFilePath, ios::binary);
     if (!inFile.is_open()) {
         return nullptr;
     }
@@ -101,18 +128,46 @@ HuffmanTree* FileDealer::readEncodedDataBinary() {
     return huffTree;
 }
 
-void FileDealer::setDecodedFilePath(string filePath) {
-    decodedFilePath = std::move(filePath);
+bool FileDealer::writeDecodedDataText(const string& decodedString) {
+    ofstream outFile(decodedDestinationFilePath);
+    if (!outFile.is_open()) {
+        return false;
+    }
+
+    outFile << decodedString;
+
+    outFile.close();
+    return true;
 }
 
-void FileDealer::setEncodedFilePath(string filePath) {
-    encodedFilePath = std::move(filePath);
+void FileDealer::setDecodedOriginFilePath(string filePath) {
+    decodedOriginFilePath = std::move(filePath);
 }
 
-string FileDealer::getDecodedFilePath() {
-    return decodedFilePath;
+void FileDealer::setEncodedDestinationFilePath(string filePath) {
+    encodedDestinationFilePath = std::move(filePath);
 }
 
-string FileDealer::getEncodedFilePath() {
-    return encodedFilePath;
+void FileDealer::setEncodedOriginFilePath(string filePath) {
+    encodedOriginFilePath = std::move(filePath);
+}
+
+void FileDealer::setDecodedDestinationFilePath(string filePath) {
+    decodedDestinationFilePath = std::move(filePath);
+}
+
+string FileDealer::getDecodedOriginFilePath() {
+    return decodedOriginFilePath;
+}
+
+string FileDealer::getEncodedDestinationFilePath() {
+    return encodedDestinationFilePath;
+}
+
+string FileDealer::getEncodedOriginFilePath() {
+    return encodedOriginFilePath;
+}
+
+string FileDealer::getDecodedDestinationFilePath() {
+    return decodedDestinationFilePath;
 }
