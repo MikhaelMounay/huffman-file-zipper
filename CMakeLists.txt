@@ -12,7 +12,7 @@ find_package(Qt6 COMPONENTS
         Widgets
         REQUIRED)
 
-file(GLOB_RECURSE SRC src/*.cpp src/*.h src/*.ui)
+file(GLOB_RECURSE SRC src/*.cpp src/*.h src/*.ui resources/*.qrc resources/*.rc)
 add_executable(HuffmanFileZipper ${SRC})
 target_link_libraries(HuffmanFileZipper
         Qt::Core

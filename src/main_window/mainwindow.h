@@ -3,20 +3,30 @@
 
 #include <QMainWindow>
 
+#include <QGraphicsDropShadowEffect>
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+
+namespace Ui {
+class MainWindow;
+}
+
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow {
-Q_OBJECT
+    Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
+    explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow() override;
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow* ui;
+
+    // Styles
+    QGraphicsDropShadowEffect* shadowEffect_browse;
+    QGraphicsDropShadowEffect* shadowEffect_submit;
+    QGraphicsDropShadowEffect* shadowEffect_filePath;
 };
 
 
