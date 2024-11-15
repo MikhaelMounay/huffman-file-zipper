@@ -20,11 +20,11 @@
 
 ## Change Logs
 
-- [1.0 changelog](docs/change-logs/CHANGELOG-1.0.md)
+- [1.0 changelog](change-logs/CHANGELOG-1.0.md)
 
 ## For Developers
 
-### [Design Specifications](docs/design-specs/design-specs-1.0.md)
+### [Design Specifications](design-specs/design-specs-1.0.md)
 
 ### Building from Source Code
 
