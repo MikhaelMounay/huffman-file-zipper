@@ -179,7 +179,7 @@ HuffmanTree* FileDealer::readEncodedDataText() {
     }
 
     // int codewordsSize = stoi(inputWord);
-    inputWord = "";
+    inputWord = string("");
 
     // Reading the characters, their codewordLength, and their codewords
     unordered_map<char, string> codewords;
@@ -192,7 +192,7 @@ HuffmanTree* FileDealer::readEncodedDataText() {
                 codewords[character] = inputWord;
             }
 
-            inputWord = "";
+            inputWord = string("");
             position = 0;
 
             if (c == ',') {
@@ -203,7 +203,7 @@ HuffmanTree* FileDealer::readEncodedDataText() {
         }
 
         if (c == '|') {
-            inputWord = "";
+            inputWord = string("");
             position++;
             continue;
         }
@@ -217,7 +217,7 @@ HuffmanTree* FileDealer::readEncodedDataText() {
         }
     }
 
-    inputWord = "";
+    inputWord = string("");
 
     // Reading the length of the encoded string
     while (inFile.get(c)) {
@@ -229,7 +229,6 @@ HuffmanTree* FileDealer::readEncodedDataText() {
     }
 
     // int encodedStringLength = stoi(inputWord);
-    inputWord = "";
 
     // Reading the encoded string (the bits of the encoded string consisting of codewords)
     string encodedString;
