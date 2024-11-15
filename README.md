@@ -28,7 +28,9 @@
 
 ### Building from Source Code
 
-Used build system: `CMake 3.29` - `Desktop Qt 6.6.2 MinGW 64-bit`
+Used build system
+- `CMake 3.29` [![CMake 3](https://img.shields.io/badge/-CMake%203-064F8C?logo=cmake&logoColor=white&style=flat-square)](https://cmake.org/)
+- `Desktop Qt 6.6.2 MinGW 64-bit` [![Qt C++ 6](https://img.shields.io/badge/-Qt%20C%2B%2B%206-41CD52?logo=Qt&logoColor=white&style=flat-square)](https://www.qt.io/)
 
 Make sure to specify the compiler path in CMake options:
 `"-DCMAKE_PREFIX_PATH=C:/path/to/Qt/x.x.x/mingw_64"`
