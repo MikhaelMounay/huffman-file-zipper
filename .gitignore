@@ -1,6 +1,7 @@
 
 # Build Artifacts
 cmake-build-*/
+dist/
 
 # Environments
 *.env*
