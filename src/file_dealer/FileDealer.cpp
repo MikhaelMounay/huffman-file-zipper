@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <fstream>
-#include <sstream>
 
 FileDealer::FileDealer(): decodedOriginFilePath("decodedInput.txt"),
                           encodedDestinationFilePath("encodedOutput.hfz"),
@@ -179,7 +178,7 @@ HuffmanTree* FileDealer::readEncodedDataText() {
         }
     }
 
-    int codewordsSize = stoi(inputWord);
+    // int codewordsSize = stoi(inputWord);
     inputWord = "";
 
     // Reading the characters, their codewordLength, and their codewords
