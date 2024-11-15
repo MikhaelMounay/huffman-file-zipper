@@ -5,3 +5,5 @@ cmake-build-*/
 # Environments
 *.env*
 
+# User-Related Files
+*.user
