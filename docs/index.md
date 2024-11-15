@@ -28,17 +28,20 @@
 
 ### Building from Source Code
 
-Used build system
+Used build system:
 - `CMake 3.29` [![CMake 3](https://img.shields.io/badge/-CMake%203-064F8C?logo=cmake&logoColor=white&style=flat-square)](https://cmake.org/)
 - `Desktop Qt 6.6.2 MinGW 64-bit` [![Qt C++ 6](https://img.shields.io/badge/-Qt%20C%2B%2B%206-41CD52?logo=Qt&logoColor=white&style=flat-square)](https://www.qt.io/)
 
-Make sure to specify the compiler path in CMake options:
+> Make sure to specify the compiler path in CMake options:
 `"-DCMAKE_PREFIX_PATH=C:/path/to/Qt/x.x.x/mingw_64"`
+
+Dependencies:
+- `GoogleTest 1.15.2` [![CMake 3](https://img.shields.io/badge/-GoogleTest-4285F4?logo=Google&logoColor=white&style=flat-square)](https://github.com/google/googletest)
 
 ## Collaborators
 
 - [Mikhael Mounay Khalil](https://github.com/MikhaelMounay)
-- [Kirollos Mounir](https://github.com/KirollosFady)
 - Marcelino Sedhum
+- [Kirollos Mounir](https://github.com/KirollosFady)
 - [Omar Khalil](https://github.com/omarramy22)
 - [Omar Youssef](https://github.com/omaaryouussef)
