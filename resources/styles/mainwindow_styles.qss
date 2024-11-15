@@ -1,51 +1,69 @@
 #MainWindow {
-  background-color: #fbfbfd;
-  padding: 50px;
+    background-color: #fbfbfd;
+    padding: 50px;
 }
 
 * {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif;
-  font-weight: 350;
-  font-size: 13px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    font-weight: 350;
+    font-size: 13px;
 }
 
 QPushButton {
-  background-color: #ffffff;
-  border: 1px solid;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  padding: 7px 15px;
-  text-align: center;
-  color: black;
-  text-decoration: none;
+    background-color: #ffffff;
+    border: 1px solid;
+    border-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    padding: 7px 15px;
+    text-align: center;
+    color: black;
+    text-decoration: none;
 }
 
 QPushButton:hover {
-  background-color: #e3e3e3;
+    background-color: #e3e3e3;
 }
 
 QPushButton:pressed {
-  background-color: #e0e0e0;
+    background-color: #e0e0e0;
 }
 
 QPushButton:focus {
-  border-color: rgba(0, 0, 0, 0.8);
-  border-width: 1.1px;
+    border-color: rgba(0, 0, 0, 0.8);
+    border-width: 1.1px;
 }
 
 QLineEdit {
-  background-color: #ffffff;
-  border: 1px solid;
-  border-color: rgba(0, 0, 0, 0.2);
-  border-bottom-color: rgba(0, 0, 0, 1);
-  border-radius: 4px;
-  padding: 4px 8px;
-  color: black;
-  text-decoration: none;
+    background-color: #ffffff;
+    border: 1px solid;
+    border-color: rgba(0, 0, 0, 0.2);
+    border-bottom-color: rgba(0, 0, 0, 1);
+    border-radius: 4px;
+    padding: 4px 8px;
+    color: black;
+    text-decoration: none;
 }
 
 QLineEdit:focus {
-  border-bottom: 1.5px solid;
-  border-bottom-color: #0067c0;
+    border-bottom: 1.5px solid;
+    border-bottom-color: #0067c0;
+}
+
+QLabel#label_errorMsg {
+    padding-left: 8px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: transparent;
+    border-left-color: #d20a2e;
+    color: #d20a2e;
+}
+
+QLabel#label_successMsg {
+    padding-left: 8px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: transparent;
+    border-left-color: #00674f;
+    color: #00674f;
 }

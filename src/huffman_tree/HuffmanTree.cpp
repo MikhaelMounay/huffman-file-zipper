@@ -4,11 +4,6 @@ HuffmanTree::HuffmanTree() {
     MinHeap minHeap = MinHeap();
 }
 
-HuffmanTree::HuffmanTree(unordered_map<char, int> freqMap) {
-    MinHeap minHeap = MinHeap(freqMap.size());
-    buildTreeFreqMap(freqMap);
-}
-
 HuffmanTree::HuffmanTree(string inputData) {
     unordered_map<char, int> freqMap;
 
@@ -20,6 +15,18 @@ HuffmanTree::HuffmanTree(string inputData) {
     buildTreeFreqMap(freqMap);
 
     decodedData = inputData;
+
+    if (!decodedData.empty()) {
+        encodedData = encode();
+    }
+}
+
+HuffmanTree::HuffmanTree(const unordered_map<char, int>& freqMap,
+                         string decodedString) {
+    MinHeap minHeap = MinHeap(freqMap.size());
+    buildTreeFreqMap(freqMap);
+
+    decodedData = std::move(decodedString);
 
     if (!decodedData.empty()) {
         encodedData = encode();
@@ -57,8 +64,8 @@ void HuffmanTree::buildTreeFreqMap(unordered_map<char, int> freqMap) {
 
     huffRoot = minHeap.getMin();
     generateCodes(huffRoot, "");
-    encode();
-    decode(); // TODO: This line is just for testing purposes
+    // encodedData = encode();
+    // decodedData = decode(); // TODO: This line is just for testing purposes
 }
 
 void HuffmanTree::buildTreeCodewordsMap() {

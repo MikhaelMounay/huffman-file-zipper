@@ -36,7 +36,7 @@ public:
 
     // Writes a normal data file to decodedFilePath
     // (Decompression)
-    bool writeDecodedDataText(const string& encodedString);
+    bool writeDecodedDataText(const string& decodedString);
 
     // Setters
     void setDecodedOriginFilePath(string filePath);

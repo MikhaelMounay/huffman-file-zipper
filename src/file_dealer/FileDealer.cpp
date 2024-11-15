@@ -25,16 +25,19 @@ HuffmanTree* FileDealer::readOriginalDataText() {
         return nullptr;
     }
 
+    string originalDecodedString;
     unordered_map<char, int> charFreqs;
     char c;
 
     while (inFile.get(c)) {
         charFreqs[c]++;
+        originalDecodedString += c;
     }
 
     inFile.close();
 
-    HuffmanTree* huffTree = new HuffmanTree(charFreqs);
+    HuffmanTree* huffTree = new HuffmanTree(charFreqs, originalDecodedString);
+
     return huffTree;
 }
 

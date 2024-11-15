@@ -35,12 +35,13 @@ public:
     // Default Constructor
     HuffmanTree();
 
-    // Parameterized constructor that takes a map of characters and their frequencies to build Huffman Tree
-    explicit HuffmanTree(unordered_map<char, int> freqMap);
-
     // Parameterized constructor that takes input data as string to encode
     explicit HuffmanTree(string inputData);
 
+    // Parameterized constructor that takes a map of characters and their frequencies to build Huffman Tree
+    explicit HuffmanTree(const unordered_map<char, int>& freqMap, string decodedString);
+
+    // Parameterized constructor that takes an encoded string and a corresponding map of codewords
     explicit HuffmanTree(unordered_map<char, string> codewordsMap,
                          string encodedString);
 

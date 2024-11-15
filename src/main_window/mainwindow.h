@@ -2,8 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-
 #include <QGraphicsDropShadowEffect>
+
+#include "../file_dealer/FileDealer.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -20,6 +21,11 @@ public:
     explicit MainWindow(QWidget* parent = nullptr);
     ~MainWindow() override;
 
+private slots:
+    void on_lineEdit_filePath_textChanged(const QString& newText);
+    void on_pushButton_browse_clicked();
+    void on_pushButton_submit_clicked();
+
 private:
     Ui::MainWindow* ui;
 
@@ -27,6 +33,11 @@ private:
     QGraphicsDropShadowEffect* shadowEffect_browse;
     QGraphicsDropShadowEffect* shadowEffect_submit;
     QGraphicsDropShadowEffect* shadowEffect_filePath;
+
+    // Business Logic
+    bool isFilePathValid;
+    bool isModeCompress;
+    FileDealer fDealer;
 };
 
 

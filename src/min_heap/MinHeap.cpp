@@ -46,7 +46,7 @@ int MinHeap::rightChild(int index) {
 }
 
 void MinHeap::insert(char character, int frequency) {
-    if (size == capacity) {
+    if (size == capacity - 1) {
         resizeHeapArray();
     }
 

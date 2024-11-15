@@ -3,14 +3,14 @@
 
 TEST(HuffmanTreeTest, SingleCharacterTree) {
     unordered_map<char, int> charFreqs = {{'a', 10}};
-    HuffmanTree tree(charFreqs);
+    HuffmanTree tree(charFreqs, "aaaaaaaaaa");
 
     EXPECT_EQ(tree.getCodeword('a'), "");
 }
 
 TEST(HuffmanTreeTest, TwoCharacterTree) {
     unordered_map<char, int> charFreqs = {{'a', 5}, {'b', 10}};
-    HuffmanTree tree(charFreqs);
+    HuffmanTree tree(charFreqs, "aaaaabbbbbbbbbb");
 
     EXPECT_EQ(tree.getCodeword('a'), "0");
     EXPECT_EQ(tree.getCodeword('b'), "1");
@@ -19,7 +19,8 @@ TEST(HuffmanTreeTest, TwoCharacterTree) {
 TEST(HuffmanTreeTest, MultipleCharacterTree) {
     unordered_map<char, int> charFreqs = {
         {'a', 5}, {'b', 10}, {'c', 15}, {'d', 20}};
-    HuffmanTree tree(charFreqs);
+    HuffmanTree tree(charFreqs,
+                     "aaaaabbbbbbbbbbcccccccccccccccdddddddddddddddddddd");
 
     EXPECT_EQ(tree.getCodeword('a'), "110");
     EXPECT_EQ(tree.getCodeword('b'), "111");
@@ -34,7 +35,7 @@ TEST(HuffmanTreeTest, EncodingAndDecodingFreqMapConstructor) {
     for (int i = 0; i < input.size(); i++) {
         charFreqs[input[i]] += 1;
     }
-    HuffmanTree tree(charFreqs);
+    HuffmanTree tree(charFreqs, "abacdab");
 
     tree.setDecodedDataAndEncode(input);
     std::string encoded = tree.getEncodedData();
