@@ -34,6 +34,14 @@ public:
     // (Decompression)
     HuffmanTree* readEncodedDataBinary();
 
+    // Takes encoded string and its accompanying map of codewords and save them to the text file encodedFilePath
+    // (Compression)
+    bool writeEncodedDataText(const string& encodedString, const unordered_map<char, string>& codewords);
+
+    // Reads encoded string and its accompanying map of codewords from the text file encodedFilePath and constructs a HuffmanTree with them
+    // (Decompression)
+    HuffmanTree* readEncodedDataText();
+
     // Writes a normal data file to decodedFilePath
     // (Decompression)
     bool writeDecodedDataText(const string& decodedString);

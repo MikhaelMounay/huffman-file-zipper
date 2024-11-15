@@ -82,7 +82,8 @@ void MainWindow::on_lineEdit_filePath_textChanged(const QString& newText) {
     }
 
     // Validate chosen file path
-    if (!newText.endsWith(".hfz") && !newText.endsWith(".txt")) {
+    if (!newText.endsWith(".hfz") && !newText.endsWith(".hfzb") && !newText.
+        endsWith(".txt")) {
         isModeCompress = true;
         ui->label_errorMsg->setText(
             "Please choose file of specified types only! (.txt | .hfz)");
@@ -93,7 +94,7 @@ void MainWindow::on_lineEdit_filePath_textChanged(const QString& newText) {
     }
 
     // Change submit button text accordingly
-    if (newText.endsWith(".hfz")) {
+    if (newText.endsWith(".hfz") || newText.endsWith(".hfzb")) {
         isModeCompress = false;
         ui->pushButton_submit->setText("Decompress");
     } else {
@@ -106,17 +107,10 @@ void MainWindow::on_pushButton_browse_clicked() {
     // Prompt user to choose file
     QString chosenFilePath = QFileDialog::getOpenFileName(
         this, "Choose File", QDir::homePath(),
-        "Text Files | HuffmanFileZipper Files (*.txt *.hfz)");
+        "Text Files | HuffmanFileZipper (Binary) Files (*.txt *.hfz *.hfzb)");
 
     // Change FilePath line edit accordingly
     ui->lineEdit_filePath->setText(chosenFilePath);
-
-    // Change submit button text & FileDealer file paths accordingly
-    if (chosenFilePath.endsWith(".hfz")) {
-        fDealer.setDecodedOriginFilePath(chosenFilePath.toStdString());
-    } else {
-        ui->pushButton_submit->setText("Compress");
-    }
 }
 
 void MainWindow::on_pushButton_submit_clicked() {
@@ -127,8 +121,8 @@ void MainWindow::on_pushButton_submit_clicked() {
         return;
     }
 
-    QString chosenFilePath = ui->lineEdit_filePath->text();
     //region Validate the original chosen file path
+    QString chosenFilePath = ui->lineEdit_filePath->text();
 
     // Hide error message & mark file as valid initially
     ui->label_errorMsg->setVisible(false);
@@ -137,14 +131,18 @@ void MainWindow::on_pushButton_submit_clicked() {
     if (chosenFilePath.isEmpty()) {
         ui->label_errorMsg->setText("Please choose a file first!");
         ui->label_errorMsg->setVisible(true);
+        return;
     }
-
-    //endregion
 
     // Prompt user to choose save destination
     QString fileType;
+    bool isToBinary = ui->checkBox_toBinary->isChecked();
     if (isModeCompress) {
-        fileType = "HuffmanFileZipper Files (*.hfz)";
+        if (isToBinary) {
+            fileType = "HuffmanFileZipper Binary Files (*.hfzb)";
+        } else {
+            fileType = "HuffmanFileZipper Binary (*.hfz)";
+        }
     } else {
         fileType = "Text Files (*.txt)";
     }
@@ -153,23 +151,21 @@ void MainWindow::on_pushButton_submit_clicked() {
         this, "Save to", QDir::homePath(),
         fileType);
 
+    // Validate the save-to file path
+    if (saveToFilePath.isEmpty()) {
+        ui->label_errorMsg->setText("Please specify a place to save to!");
+        ui->label_errorMsg->setVisible(true);
+        return;
+    }
+
+    //endregion
+
     //region Business Logic
 
-    // Change FileDealer file paths & call its methods accordingly
+    // Use Helper functions to (de)compress and show success/error messages
     if (isModeCompress) {
-        fDealer.setDecodedOriginFilePath(chosenFilePath.toStdString());
-        fDealer.setEncodedDestinationFilePath(saveToFilePath.toStdString());
-
-        HuffmanTree* huffTree = fDealer.readOriginalDataText();
-
-        bool isSuccess = false;
-        if (huffTree) {
-            isSuccess = true;
-            fDealer.writeEncodedDataBinary(huffTree->getEncodedData(),
-                                           *huffTree->getCodewordsMap());
-        }
-
-        if (isSuccess) {
+        if (compress(chosenFilePath.toStdString(), saveToFilePath.toStdString(),
+                     isToBinary)) {
             ui->label_successMsg->setText("Compressed and Saved Successfully!");
             ui->label_successMsg->setVisible(true);
         } else {
@@ -178,18 +174,9 @@ void MainWindow::on_pushButton_submit_clicked() {
             ui->label_errorMsg->setVisible(true);
         }
     } else {
-        fDealer.setEncodedOriginFilePath(chosenFilePath.toStdString());
-        fDealer.setDecodedDestinationFilePath(saveToFilePath.toStdString());
-
-        HuffmanTree* huffTree = fDealer.readEncodedDataBinary();
-
-        bool isSuccess = false;
-        if (huffTree != nullptr) {
-            isSuccess = true;
-            fDealer.writeDecodedDataText(huffTree->getDecodedData());
-        }
-
-        if (isSuccess) {
+        if (decompress(chosenFilePath.toStdString(),
+                       saveToFilePath.toStdString(),
+                       chosenFilePath.endsWith(".hfzb"))) {
             ui->label_successMsg->setText(
                 "Decompressed and Saved Successfully!");
             ui->label_successMsg->setVisible(true);
@@ -201,4 +188,52 @@ void MainWindow::on_pushButton_submit_clicked() {
     }
 
     //endregion
+}
+
+// Helper Functions
+bool MainWindow::compress(const string& chosenFilePath,
+                          const string& saveToFilePath, bool isToBinary) {
+    // Change FileDealer file paths & call its methods accordingly
+    fDealer.setDecodedOriginFilePath(chosenFilePath);
+    fDealer.setEncodedDestinationFilePath(saveToFilePath);
+
+    HuffmanTree* huffTree = fDealer.readOriginalDataText();
+
+    if (huffTree == nullptr) {
+        return false;
+    }
+
+    // Save compressed file either as binary .hfzb or .hfz
+    if (isToBinary) {
+        fDealer.writeEncodedDataBinary(huffTree->getEncodedData(),
+                                       *huffTree->getCodewordsMap());
+    } else {
+        fDealer.writeEncodedDataText(huffTree->getEncodedData(),
+                                     *huffTree->getCodewordsMap());
+    }
+
+    return true;
+}
+
+bool MainWindow::decompress(const string& chosenFilePath,
+                            const string& saveToFilePath, bool isFromBinary) {
+    // Change FileDealer file paths & call its methods accordingly
+    fDealer.setEncodedOriginFilePath(chosenFilePath);
+    fDealer.setDecodedDestinationFilePath(saveToFilePath);
+
+    HuffmanTree* huffTree;
+
+    if (isFromBinary) {
+        huffTree = fDealer.readEncodedDataBinary();
+    } else {
+        huffTree = fDealer.readEncodedDataText();
+    }
+
+    if (huffTree == nullptr) {
+        return false;
+    }
+
+    fDealer.writeDecodedDataText(huffTree->getDecodedData());
+
+    return true;
 }

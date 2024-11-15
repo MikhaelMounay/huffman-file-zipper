@@ -38,6 +38,10 @@ private:
     bool isFilePathValid;
     bool isModeCompress;
     FileDealer fDealer;
+
+    // Helper Functions
+    bool compress(const string& chosenFilePath, const string& saveToFilePath, bool isToBinary);
+    bool decompress(const string& chosenFilePath, const string& saveToFilePath, bool isFromBinary);
 };
 
 

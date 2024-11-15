@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <fstream>
+#include <sstream>
 
 FileDealer::FileDealer(): decodedOriginFilePath("decodedInput.txt"),
                           encodedDestinationFilePath("encodedOutput.hfz"),
@@ -130,6 +131,116 @@ HuffmanTree* FileDealer::readEncodedDataBinary() {
 
     return huffTree;
 }
+
+bool FileDealer::writeEncodedDataText(const string& encodedString,
+                                      const unordered_map<char, string>&
+                                      codewords) {
+    ofstream outFile(encodedDestinationFilePath);
+    if (!outFile.is_open()) {
+        return false;
+    }
+
+    // Writing size of codewords map
+    size_t codewordsSize = codewords.size();
+    outFile << codewordsSize << ";";
+
+    // Writing the characters, their codewordLength, and their codewords
+    for (auto it = codewords.begin(); it != codewords.end(); it++) {
+        outFile << it->first << "|" << it->second.length() << "|" << it->second
+            << ",";
+    }
+    outFile << ";";
+
+    // Writing the length of the encoded string
+    outFile << encodedString.length() << ",";
+
+    // Writing the encoded string (the bits of the encoded string consisting of codewords)
+    outFile << encodedString << "\n";
+
+    outFile.close();
+    return true;
+}
+
+HuffmanTree* FileDealer::readEncodedDataText() {
+    ifstream inFile(encodedOriginFilePath);
+    if (!inFile.is_open()) {
+        return nullptr;
+    }
+
+    char c;
+    string inputWord;
+
+    // Reading the size of codewords map
+    while (inFile.get(c)) {
+        if (c != ';') {
+            inputWord += c;
+        } else {
+            break;
+        }
+    }
+
+    int codewordsSize = stoi(inputWord);
+    inputWord = "";
+
+    // Reading the characters, their codewordLength, and their codewords
+    unordered_map<char, string> codewords;
+    char character;
+
+    int position = 0;
+    while (inFile.get(c)) {
+        if (c == ',' || c == ';') {
+            if (!inputWord.empty()) {
+                codewords[character] = inputWord;
+            }
+
+            inputWord = "";
+            position = 0;
+
+            if (c == ',') {
+                continue;
+            } else {
+                break;
+            }
+        }
+
+        if (c == '|') {
+            inputWord = "";
+            position++;
+            continue;
+        }
+
+        if (position == 0) {
+            character = c;
+        } else if (position == 1) {
+            continue;
+        } else if (position == 2) {
+            inputWord += c;
+        }
+    }
+
+    inputWord = "";
+
+    // Reading the length of the encoded string
+    while (inFile.get(c)) {
+        if (c == ',') {
+            break;
+        }
+
+        inputWord += c;
+    }
+
+    // int encodedStringLength = stoi(inputWord);
+    inputWord = "";
+
+    // Reading the encoded string (the bits of the encoded string consisting of codewords)
+    string encodedString;
+    getline(inFile, encodedString);
+
+    HuffmanTree* huffTree = new HuffmanTree(codewords, encodedString);
+
+    return huffTree;
+}
+
 
 bool FileDealer::writeDecodedDataText(const string& decodedString) {
     ofstream outFile(decodedDestinationFilePath);
