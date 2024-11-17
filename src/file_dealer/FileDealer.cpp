@@ -74,8 +74,26 @@ bool FileDealer::writeEncodedDataBinary(const string& encodedString,
                   sizeof(encodedStringLength));
 
     // Writing the encoded string (the bits of the encoded string consisting of codewords)
+    // Writing the encoded string (bit by bit)
+    char currentByte = 0;
+    int bitIndex = 0;
     for (int i = 0; i < encodedStringLength; i++) {
-        outFile.write(&(encodedString[i]), sizeof(encodedString[i]));
+        currentByte |= (encodedString[i] - '0') << (7 - bitIndex);
+        bitIndex++;
+
+        if (bitIndex == 8) {
+            outFile.write(&currentByte, sizeof(currentByte));
+            currentByte = 0;
+            bitIndex = 0;
+        }
+    }
+
+    // Write any remaining bits with padding of 0s to fill the remaining bits
+    if (bitIndex > 0) {
+        for (int i = bitIndex; i < 8; i++) {
+            currentByte |= 0 << (7 - i);
+        }
+        outFile.write(&currentByte, sizeof(currentByte));
     }
 
     outFile.close();
@@ -120,10 +138,22 @@ HuffmanTree* FileDealer::readEncodedDataBinary() {
 
     // Reading the encoded string (the bits of the encoded string consisting of codewords)
     string encodedString;
-    for (uint64_t i = 0; i < encodedStringLength; i++) {
-        char bit;
-        inFile.read(&bit, sizeof(bit));
-        encodedString += bit;
+    char currentByte;
+
+    int totalBitsRead = 0;
+    uint64_t numberOfBytes = (encodedStringLength / 8) + (
+                                 encodedStringLength % 8 ? 1 : 0);
+    for (int i = 0; i < numberOfBytes; i++) {
+        inFile.read(&currentByte, sizeof(currentByte));
+
+        for (int j = 7; j >= 0; j--) {
+            if (totalBitsRead < encodedStringLength) {
+                // To avoid including the padding in the encodedString
+                char bit = (currentByte >> j) & 1;
+                encodedString += bit + '0';
+                totalBitsRead++;
+            }
+        }
     }
 
     HuffmanTree* huffTree = new HuffmanTree(codewords, encodedString);
