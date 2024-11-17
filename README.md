@@ -41,7 +41,7 @@ Dependencies:
 ## Collaborators
 
 - [Mikhael Mounay Khalil](https://github.com/MikhaelMounay)
-- Marcelino Sedhum
+- [Marcelino Sedhum](https://github.com/marcelinoSamer)
 - [Kirollos Mounir](https://github.com/KirollosFady)
 - [Omar Khalil](https://github.com/omarramy22)
 - [Omar Youssef](https://github.com/omaaryouussef)
