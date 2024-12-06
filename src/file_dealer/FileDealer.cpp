@@ -6,6 +6,7 @@
 #include <fstream>
 
 #include <bcrypt.h>
+// #include "../../external/bcrypt/include/bcrypt.h"
 
 FileDealer::FileDealer(): decodedOriginFilePath("decodedInput.txt"),
                           encodedDestinationFilePath("encodedOutput.hfz"),

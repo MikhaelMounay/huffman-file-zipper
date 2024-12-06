@@ -19,5 +19,9 @@ FetchContent_MakeAvailable(googletest)
 
 file(GLOB TEST_SRC *.cpp)
 add_executable(HuffmanFileZipperTests ${TEST_SRC})
+
+target_include_directories(HuffmanFileZipperTests PUBLIC ../external/bcrypt/include)
+
+target_link_libraries(HuffmanFileZipperTests bcrypt)
 target_link_libraries(HuffmanFileZipperTests HuffmanFileZipper_lib)
 target_link_libraries(HuffmanFileZipperTests gtest gtest_main)

@@ -19,3 +19,4 @@ target_link_libraries(HuffmanFileZipper_lib
         Qt::Gui
         Qt::Widgets
 )
+target_link_libraries(HuffmanFileZipper_lib bcrypt)
