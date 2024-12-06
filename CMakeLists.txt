@@ -14,7 +14,7 @@ find_package(Qt6 COMPONENTS
 
 file(GLOB_RECURSE SRC src/*.cpp src/*.h src/*.ui resources/*.qrc resources/*.rc)
 
-if (WIN32 AND CMAKE_BUILD_TYPE MATCHES "Release")
+if (WIN32)
     add_executable(HuffmanFileZipper WIN32 ${SRC})
 else ()
     add_executable(HuffmanFileZipper ${SRC})
