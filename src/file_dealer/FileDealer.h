@@ -28,15 +28,17 @@ public:
     // Takes encoded string and its accompanying map of codewords and save them to the binary file encodedFilePath
     // (Compression)
     bool writeEncodedDataBinary(const string& encodedString,
-                                const unordered_map<char, string>& codewords);
+                                const unordered_map<char, string>& codewords,
+                                string password = "");
 
     // Reads encoded string and its accompanying map of codewords from the binary file encodedFilePath and constructs a HuffmanTree with them
     // (Decompression)
-    HuffmanTree* readEncodedDataBinary();
+    HuffmanTree* readEncodedDataBinary(string password = "");
 
     // Takes encoded string and its accompanying map of codewords and save them to the text file encodedFilePath
     // (Compression)
-    bool writeEncodedDataText(const string& encodedString, const unordered_map<char, string>& codewords);
+    bool writeEncodedDataText(const string& encodedString,
+                              const unordered_map<char, string>& codewords);
 
     // Reads encoded string and its accompanying map of codewords from the text file encodedFilePath and constructs a HuffmanTree with them
     // (Decompression)

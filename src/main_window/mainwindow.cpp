@@ -2,6 +2,9 @@
 #include "ui_MainWindow.h"
 
 #include <QFileDialog>
+#include <QInputDialog>
+#include <utility>
+#include <fstream>
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent), ui(new Ui::MainWindow) {
@@ -48,6 +51,8 @@ MainWindow::MainWindow(QWidget* parent) :
 
     ui->label_errorMsg->setVisible(false);
     ui->label_successMsg->setVisible(false);
+
+    ui->lineEdit_password->setVisible(false);
 
     // Setting Default focus to the Browse button
     ui->pushButton_browse->setFocus();
@@ -97,9 +102,21 @@ void MainWindow::on_lineEdit_filePath_textChanged(const QString& newText) {
     if (newText.endsWith(".hfz") || newText.endsWith(".hfzb")) {
         isModeCompress = false;
         ui->pushButton_submit->setText("Decompress");
+
+        ui->checkBox_toBinary->setVisible(false);
+
+        ui->checkBox_passwordProtected->setChecked(false);
+        ui->checkBox_passwordProtected->setVisible(false);
+        ui->lineEdit_password->setVisible(false);
     } else {
         isModeCompress = true;
         ui->pushButton_submit->setText("Compress");
+
+        ui->checkBox_toBinary->setVisible(true);
+
+        ui->checkBox_passwordProtected->setVisible(true);
+        ui->checkBox_passwordProtected->setChecked(false);
+        ui->lineEdit_password->setVisible(false);
     }
 }
 
@@ -111,6 +128,14 @@ void MainWindow::on_pushButton_browse_clicked() {
 
     // Change FilePath line edit accordingly
     ui->lineEdit_filePath->setText(chosenFilePath);
+}
+
+void MainWindow::on_checkBox_passwordProtected_stateChanged(int arg1) {
+    if (ui->checkBox_passwordProtected->isChecked()) {
+        ui->lineEdit_password->setVisible(true);
+    } else {
+        ui->lineEdit_password->setVisible(false);
+    }
 }
 
 void MainWindow::on_pushButton_submit_clicked() {
@@ -158,14 +183,27 @@ void MainWindow::on_pushButton_submit_clicked() {
         return;
     }
 
+    // Validate the password
+    if (isModeCompress && ui->checkBox_passwordProtected->isChecked() && ui->
+        lineEdit_password->text().isEmpty()) {
+        ui->label_errorMsg->setText("Please provide a password!");
+        ui->label_errorMsg->setVisible(true);
+        return;
+    }
+
     //endregion
 
     //region Business Logic
 
     // Use Helper functions to (de)compress and show success/error messages
     if (isModeCompress) {
+        string password;
+        if (ui->checkBox_passwordProtected->isChecked()) {
+            password = ui->lineEdit_password->text().toStdString();
+        }
+
         if (compress(chosenFilePath.toStdString(), saveToFilePath.toStdString(),
-                     isToBinary)) {
+                     isToBinary, password)) {
             ui->label_successMsg->setText("Compressed and Saved Successfully!");
             ui->label_successMsg->setVisible(true);
         } else {
@@ -182,7 +220,7 @@ void MainWindow::on_pushButton_submit_clicked() {
             ui->label_successMsg->setVisible(true);
         } else {
             ui->label_errorMsg->setText(
-                "Something went wrong.. Please try again!");
+                "Something went wrong or incorrect password.. Please try again!");
             ui->label_errorMsg->setVisible(true);
         }
     }
@@ -192,7 +230,8 @@ void MainWindow::on_pushButton_submit_clicked() {
 
 // Helper Functions
 bool MainWindow::compress(const string& chosenFilePath,
-                          const string& saveToFilePath, bool isToBinary) {
+                          const string& saveToFilePath, bool isToBinary,
+                          string password) {
     // Change FileDealer file paths & call its methods accordingly
     fDealer.setDecodedOriginFilePath(chosenFilePath);
     fDealer.setEncodedDestinationFilePath(saveToFilePath);
@@ -206,7 +245,8 @@ bool MainWindow::compress(const string& chosenFilePath,
     // Save compressed file either as binary .hfzb or .hfz
     if (isToBinary) {
         fDealer.writeEncodedDataBinary(huffTree->getEncodedData(),
-                                       *huffTree->getCodewordsMap());
+                                       *huffTree->getCodewordsMap(),
+                                       std::move(password));
     } else {
         fDealer.writeEncodedDataText(huffTree->getEncodedData(),
                                      *huffTree->getCodewordsMap());
@@ -221,10 +261,20 @@ bool MainWindow::decompress(const string& chosenFilePath,
     fDealer.setEncodedOriginFilePath(chosenFilePath);
     fDealer.setDecodedDestinationFilePath(saveToFilePath);
 
+    QString password;
+    if (isPasswordProtected(chosenFilePath)) {
+        bool ok;
+        password = QInputDialog::getText(this, "File Password", "Password",
+                                         QLineEdit::Password, "", &ok);
+        if (!ok) {
+            return false;
+        }
+    }
+
     HuffmanTree* huffTree;
 
     if (isFromBinary) {
-        huffTree = fDealer.readEncodedDataBinary();
+        huffTree = fDealer.readEncodedDataBinary(password.toStdString());
     } else {
         huffTree = fDealer.readEncodedDataText();
     }
@@ -236,4 +286,17 @@ bool MainWindow::decompress(const string& chosenFilePath,
     fDealer.writeDecodedDataText(huffTree->getDecodedData());
 
     return true;
+}
+
+bool MainWindow::isPasswordProtected(const string& chosenFilePath) {
+    ifstream inFile(chosenFilePath, ios::binary);
+    if (!inFile.is_open()) {
+        return false;
+    }
+
+    char passwordProtectedFlag;
+    inFile.read(&passwordProtectedFlag, sizeof(char));
+
+    inFile.close();
+    return (passwordProtectedFlag == '1');
 }

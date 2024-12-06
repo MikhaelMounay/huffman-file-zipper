@@ -1,7 +1,11 @@
 #include "FileDealer.h"
 
+#include <string.h>
+
 #include <cstdint>
 #include <fstream>
+
+#include <bcrypt.h>
 
 FileDealer::FileDealer(): decodedOriginFilePath("decodedInput.txt"),
                           encodedDestinationFilePath("encodedOutput.hfz"),
@@ -43,10 +47,31 @@ HuffmanTree* FileDealer::readOriginalDataText() {
 
 bool FileDealer::writeEncodedDataBinary(const string& encodedString,
                                         const unordered_map<char, string>&
-                                        codewords) {
+                                        codewords, string password) {
     ofstream outFile(encodedDestinationFilePath, ios::binary);
     if (!outFile.is_open()) {
         return false;
+    }
+
+    // Writing the hash of the password of the file
+    char isPasswordProtected = '0';
+    if (password.empty()) {
+        outFile.write(&isPasswordProtected, sizeof(char));
+    } else {
+        isPasswordProtected = '1';
+        outFile.write(&isPasswordProtected, sizeof(char));
+
+        string passwordHash = bcrypt::generateHash(password);
+
+        // Writing the length of the hash
+        size_t passwordHashLength = passwordHash.size();
+        outFile.write(reinterpret_cast<const char*>(&passwordHashLength),
+                      sizeof(passwordHashLength));
+
+        // Writing the hash of the password
+        for (size_t i = 0; i < passwordHash.size(); i++) {
+            outFile.write(&passwordHash[i], sizeof(char));
+        }
     }
 
     // Writing size of codewords map
@@ -100,10 +125,33 @@ bool FileDealer::writeEncodedDataBinary(const string& encodedString,
     return true;
 }
 
-HuffmanTree* FileDealer::readEncodedDataBinary() {
+HuffmanTree* FileDealer::readEncodedDataBinary(string password) {
     ifstream inFile(encodedOriginFilePath, ios::binary);
     if (!inFile.is_open()) {
         return nullptr;
+    }
+
+    // Reading the hash of the password of the file
+    char isPasswordProtected;
+    inFile.read(&isPasswordProtected, sizeof(char));
+
+    if (isPasswordProtected == '1') {
+        // Reading the length of the hash
+        size_t passwordHashLength;
+        inFile.read(reinterpret_cast<char*>(&passwordHashLength),
+                    sizeof(passwordHashLength));
+
+        // Reading the hash of the password
+        string passwordHash;
+        for (size_t i = 0; i < passwordHashLength; i++) {
+            char bit;
+            inFile.read(&bit, sizeof(bit));
+            passwordHash += bit;
+        }
+
+        if (!bcrypt::validatePassword(password, passwordHash)) {
+            return nullptr;
+        }
     }
 
     // Reading the size of codewords map
@@ -158,6 +206,7 @@ HuffmanTree* FileDealer::readEncodedDataBinary() {
 
     HuffmanTree* huffTree = new HuffmanTree(codewords, encodedString);
 
+    inFile.close();
     return huffTree;
 }
 
@@ -266,6 +315,7 @@ HuffmanTree* FileDealer::readEncodedDataText() {
 
     HuffmanTree* huffTree = new HuffmanTree(codewords, encodedString);
 
+    inFile.close();
     return huffTree;
 }
 

@@ -24,6 +24,7 @@ public:
 private slots:
     void on_lineEdit_filePath_textChanged(const QString& newText);
     void on_pushButton_browse_clicked();
+    void on_checkBox_passwordProtected_stateChanged(int arg1);
     void on_pushButton_submit_clicked();
 
 private:
@@ -40,8 +41,11 @@ private:
     FileDealer fDealer;
 
     // Helper Functions
-    bool compress(const string& chosenFilePath, const string& saveToFilePath, bool isToBinary);
-    bool decompress(const string& chosenFilePath, const string& saveToFilePath, bool isFromBinary);
+    bool compress(const string& chosenFilePath, const string& saveToFilePath,
+                  bool isToBinary, string password = "");
+    bool decompress(const string& chosenFilePath, const string& saveToFilePath,
+                    bool isFromBinary);
+    bool isPasswordProtected(const string& chosenFilePath);
 };
 
 
