@@ -130,6 +130,14 @@ void MainWindow::on_pushButton_browse_clicked() {
     ui->lineEdit_filePath->setText(chosenFilePath);
 }
 
+void MainWindow::on_checkBox_toBinary_stateChanged(int arg1) {
+    if (ui->checkBox_toBinary->isChecked()) {
+        ui->checkBox_passwordProtected->setVisible(true);
+    } else {
+        ui->checkBox_passwordProtected->setVisible(false);
+    }
+}
+
 void MainWindow::on_checkBox_passwordProtected_stateChanged(int arg1) {
     if (ui->checkBox_passwordProtected->isChecked()) {
         ui->lineEdit_password->setVisible(true);

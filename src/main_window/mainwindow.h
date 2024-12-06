@@ -24,6 +24,7 @@ public:
 private slots:
     void on_lineEdit_filePath_textChanged(const QString& newText);
     void on_pushButton_browse_clicked();
+    void on_checkBox_toBinary_stateChanged(int arg1);
     void on_checkBox_passwordProtected_stateChanged(int arg1);
     void on_pushButton_submit_clicked();
 
