@@ -29,6 +29,13 @@ target_link_libraries(HuffmanFileZipper
 add_subdirectory(src)
 add_subdirectory(tests)
 
+# Linking the bcrypt library
+target_include_directories(HuffmanFileZipper PUBLIC ${PROJECT_SOURCE_DIR}/external/bcrypt/include)
+
+add_subdirectory(external/bcrypt)
+target_link_libraries(HuffmanFileZipper bcrypt)
+
+
 if (WIN32 AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     set(DEBUG_SUFFIX)
     if (MSVC AND CMAKE_BUILD_TYPE MATCHES "Debug")
