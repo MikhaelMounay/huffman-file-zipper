@@ -10,9 +10,9 @@
 
 ## Class Diagram
 
-![Huffman File Zipper - Class Diagram](class-diagram/v1.0/HuffmanFileZipper-v1.0-class-diagram.png)
+![Huffman File Zipper - Class Diagram](class-diagram/v1.1/HuffmanFileZipper-v1.1-class-diagram.png)
 
 ## UI Wireframes
 
 #### MainWindow
-![Huffman File Zipper - UI Wireframes - MainWindow](wireframes/v1.0/HuffmanFileZipper-v1.0-wireframes.png)
+![Huffman File Zipper - UI Wireframes - MainWindow](wireframes/v1.1/HuffmanFileZipper-v1.1-wireframes.png)

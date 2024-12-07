@@ -8,3 +8,4 @@ dist/
 
 # User-Related Files
 *.user
+*.bak

@@ -1,4 +1,11 @@
-## [1.0](https://github.com/MikhaelMounay/huffman-file-zipper/compare/v1.0...v1.0) (2024-11-15)
+## 1.1 (2024-12-07)
+
+### Features
+
+- **file-readwrite**: added the option of password-protecting binary compressed files
+
+
+## 1.0 (2024-11-15)
 
 > Starting point of the project
 
